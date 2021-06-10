@@ -7,27 +7,41 @@ from typing import Tuple, List
 
 
 def start_ping_test(addr: str, interval: float):
+    """
+    This function keeps sending pings to a defined
+    server address in a specified interval. A simple
+    statistics is done.
+    :param addr: Server address or ip
+    :param interval: Pinging interval in seconds
+    """
 
     print("pingi:", addr, ", interval [s]:", interval)
 
     ok = 0
     fail = 0
+    ping_time_accum = 0.0
 
     while True:
-        if not ping(addr):
+
+        ping_res = ping(addr)
+
+        if not ping_res:
             fail += 1
             sys.stdout.write("#")
         else:
             ok += 1
+            ping_time_accum += ping_res
             sys.stdout.write(".")
 
-        if (ok + fail) % 20 == 0:
+        # print out intermediate results every 10th ping
+        if (ok + fail) % 10 == 0:
             success_rate = ok / (ok + fail) * 100.0
+            avg_ping_reply_time = ping_time_accum / max(1.0, ok)
             now = datetime.now()
             dt_string = now.strftime("%H:%M:%S")
-            print("  ", dt_string, "-> Success rate = ", success_rate)
+            print("  ", dt_string, "-> Success rate =", success_rate, " , Avg. ping reply [s] =", avg_ping_reply_time)
 
-        sleep(6)
+        sleep(interval)
 
 
 def parse_pingi_args(argv) -> Tuple[str, float]:
