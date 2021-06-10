@@ -6,7 +6,6 @@ authors = ["Adrian Schneider <adrian.schneider.pr@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-matplotlib = "^3.4.2"
 ping3 = "^2.7.0"
 
 [tool.poetry.dev-dependencies]
