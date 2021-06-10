@@ -13,4 +13,4 @@ pingi: www.srf.ch , interval [s]: 0.5
 ..........   22:13:09 -> Success rate = 100.0  , Avg. ping reply [s] = 0.03984115918477376
 ...
 ```
-Every 10th ping, an intermediate (trivial) statistic is shown.
+After every 10th ping, an intermediate (trivial) statistic is shown.
