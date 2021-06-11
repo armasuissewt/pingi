@@ -1,12 +1,13 @@
 [tool.poetry]
-name = "concheck"
+name = "pingi"
 version = "0.1.0"
-description = "Internet connection check"
+description = "Ping reply time measurement"
 authors = ["Adrian Schneider <adrian.schneider.pr@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
 ping3 = "^2.7.0"
+pynput = "^1.7.3"
 
 [tool.poetry.dev-dependencies]
 

@@ -4,6 +4,21 @@ from time import sleep
 import sys
 import argparse
 from typing import Tuple
+from pynput import keyboard
+
+# global variable -> if false pingi will stop
+go_on = True
+
+
+# stop pingi when 'q' pressed
+def on_press(key):
+    global go_on
+    try:
+        if key.char is 'q':
+            go_on = False
+            return False
+    except AttributeError:
+        pass
 
 
 def start_ping_test(addr: str, interval: float, file_name: str):
@@ -23,35 +38,37 @@ def start_ping_test(addr: str, interval: float, file_name: str):
     ping_time_accum = 0.0
 
     f = open(file_name, "w")
-    f.close()
 
-    while True:
+    # listen to the keyboard to stop the loop
+    with keyboard.Listener(on_press=on_press) as listener:
 
-        ping_res = ping(addr)
+        while go_on:
+            ping_res = ping(addr)
+            now = datetime.now()
+            dt_string = now.strftime("%H:%M:%S")
 
-        now = datetime.now()
-        dt_string = now.strftime("%H:%M:%S")
+            if not ping_res:
+                fail += 1
+                sys.stdout.write("#")
+            else:
+                ok += 1
+                ping_time_accum += ping_res
+                sys.stdout.write(".")
+                f.write(dt_string + "," + str(ping_res) + "\n")
+                f.flush()
 
-        if not ping_res:
-            fail += 1
-            sys.stdout.write("#")
-        else:
-            ok += 1
-            ping_time_accum += ping_res
-            sys.stdout.write(".")
+            # print out intermediate results every 10th ping
+            if (ok + fail) % 10 == 0:
+                success_rate = ok / (ok + fail) * 100.0
+                avg_ping_reply_time = ping_time_accum / max(1.0, ok)
+                print("  ", dt_string, "-> Success rate =", success_rate,
+                      " , Avg. ping reply [s] =", avg_ping_reply_time)
 
-            # inefficient but safe
-            f = open(file_name, "a")
-            f.write(dt_string + "," + str(ping_res) + "\n")
-            f.close()
+            sleep(interval)
 
-        # print out intermediate results every 10th ping
-        if (ok + fail) % 10 == 0:
-            success_rate = ok / (ok + fail) * 100.0
-            avg_ping_reply_time = ping_time_accum / max(1.0, ok)
-            print("  ", dt_string, "-> Success rate =", success_rate, " , Avg. ping reply [s] =", avg_ping_reply_time)
-
-        sleep(interval)
+        f.close()
+        listener.join()
+        print("\n", "Quite pingi")
 
 
 def parse_pingi_args(argv) -> Tuple[str, float, str]:
