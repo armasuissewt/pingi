@@ -8,7 +8,7 @@ from typing import Tuple
 try:
     from pynput import keyboard
 except ImportError:
-    raise ImportError('pynput not supported in this environment')
+    print('Note: pynput not supported in this environment')
 
 
 # global variable -> if false pingi will stop
