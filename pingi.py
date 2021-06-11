@@ -4,7 +4,12 @@ from time import sleep
 import sys
 import argparse
 from typing import Tuple
-from pynput import keyboard
+
+try:
+    from pynput import keyboard
+except ImportError:
+    raise ImportError('pynput not supported in this environment')
+
 
 # global variable -> if false pingi will stop
 go_on = True
