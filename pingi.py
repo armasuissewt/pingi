@@ -14,7 +14,7 @@ go_on = True
 def on_press(key):
     global go_on
     try:
-        if key.char is 'q':
+        if key.char == 'q':
             go_on = False
             return False
     except AttributeError:
